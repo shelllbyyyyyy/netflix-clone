@@ -3,6 +3,19 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "webpack": true,
+    "assets": [
+      {
+        "include": "./shared/libs/mailer/templates/**/*.ejs",
+        "outDir": "dist",
+        "watchAssets": true
+      },
+      {
+        "include": "../keys/**/*",
+        "outDir": "dist",
+        "watchAssets": true
+      }
+    ]
   }
 }

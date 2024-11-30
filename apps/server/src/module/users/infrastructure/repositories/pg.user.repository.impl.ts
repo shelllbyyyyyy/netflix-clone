@@ -34,7 +34,7 @@ export class PGUserRepositoryImpl implements UserRepository {
     const id = data.getId.getValue;
     const fullname = data.getFullname;
     const email = data.getEmail.getValue;
-    const phone_number = data.getPassword;
+    const phone_number = data.getPhoneNumber;
     const password = data.getPassword;
     const provider = <Provider>data.getProvider.getValue;
 

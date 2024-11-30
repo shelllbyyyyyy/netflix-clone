@@ -28,12 +28,12 @@ CREATE TABLE IF NOT EXISTS public.users
     updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT users_pkey PRIMARY KEY (id),
     CONSTRAINT users_email_key UNIQUE (email),
-    CONSTRAINT users_phone_number_key UNIQUE (phone_number),
+    CONSTRAINT users_phone_number_key UNIQUE (phone_number)
 )
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public.profiles
+ALTER TABLE IF EXISTS public.users
     OWNER to postgres;
 
 -- Table: public.profiles
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS public.profiles
     avatar_url TEXT,
     created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT profiles_pkey PRIMARY KEY (id),
+    CONSTRAINT profiles_pkey PRIMARY KEY (id)
 )
 
 TABLESPACE pg_default;

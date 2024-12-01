@@ -7,7 +7,7 @@ const Footer = () => {
     <footer>
       <Wrapper
         section=""
-        className="flex flex-col justify-between gap-14 px-36"
+        className="flex flex-col justify-between gap-14 px-36 py-16"
       >
         <div>
           <p className="text-lg">
@@ -18,18 +18,26 @@ const Footer = () => {
           </p>
         </div>
         <div className="grid grid-cols-4">
-          {FooterLinks1.map(({ link, text }, i) => {
-            return <FooterLink key={i} link={link} text={text} />;
-          })}
-          {FooterLinks2.map(({ link, text }, i) => {
-            return <FooterLink key={i} link={link} text={text} />;
-          })}
-          {FooterLinks3.map(({ link, text }, i) => {
-            return <FooterLink key={i} link={link} text={text} />;
-          })}
-          {FooterLinks4.map(({ link, text }, i) => {
-            return <FooterLink key={i} link={link} text={text} />;
-          })}
+          <div className="flex flex-col gap-3">
+            {FooterLinks1.map(({ link, text }, i) => {
+              return <FooterLink key={i} link={link} text={text} />;
+            })}
+          </div>
+          <div className="flex flex-col gap-3">
+            {FooterLinks2.map(({ link, text }, i) => {
+              return <FooterLink key={i} link={link} text={text} />;
+            })}
+          </div>
+          <div className="flex flex-col gap-3">
+            {FooterLinks3.map(({ link, text }, i) => {
+              return <FooterLink key={i} link={link} text={text} />;
+            })}
+          </div>
+          <div className="flex flex-col gap-3">
+            {FooterLinks4.map(({ link, text }, i) => {
+              return <FooterLink key={i} link={link} text={text} />;
+            })}
+          </div>
         </div>
         <div className="space-y-2">
           <Language />
@@ -130,7 +138,7 @@ const FooterLinks4 = [
 const FooterLink = ({ text, link }: { text: string; link: string }) => {
   return (
     <a
-      className="text-lg font-semi-bold text-muted-foreground underline"
+      className="text-sm font-semi-bold text-muted-foreground underline"
       href={link}
     >
       {text}

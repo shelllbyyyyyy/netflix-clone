@@ -19,6 +19,11 @@ async function bootstrap() {
   app.useGlobalFilters(exceptions);
   app.setGlobalPrefix('api');
   app.use(cookieParser());
+  app.enableCors({
+    origin: ['http://localhost:3000'],
+    methods: ['*'],
+    credentials: true,
+  });
 
   SwaggerModule.setup('api/docs', app, document);
   await app.listen(process.env.PORT ?? 4000);

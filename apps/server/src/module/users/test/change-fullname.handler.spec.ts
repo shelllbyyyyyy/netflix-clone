@@ -4,7 +4,7 @@ import { RedisService } from '@/shared/libs/redis/redis.service';
 import { PGUserRepository } from '@/shared/libs/constant';
 
 import { UserRepository } from '../domain/repositories/user.repository';
-import { ChangeFullnameHandler } from '../application/commands/change-Fullname.handler';
+import { ChangeFullnameHandler } from '../application/commands/change-fullname.handler';
 import {
   deepCopy,
   email,

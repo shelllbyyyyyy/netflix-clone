@@ -5,7 +5,7 @@ import { PGUserRepository } from '@/shared/libs/constant';
 import { BcryptService } from '@/shared/libs/bcrypt';
 
 import { UserRepository } from '../domain/repositories/user.repository';
-import { ChangePasswordHandler } from '../application/commands/change-Password.handler';
+import { ChangePasswordHandler } from '../application/commands/change-password.handler';
 import {
   deepCopy,
   hashed_password,

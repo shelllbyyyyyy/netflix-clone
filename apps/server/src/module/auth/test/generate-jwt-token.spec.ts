@@ -46,7 +46,7 @@ describe('Generate jwt token', () => {
     expect(mockTokenizer.generateToken).toHaveBeenNthCalledWith(
       1,
       JwtPayload,
-      '1h',
+      '15m',
     );
     expect(mockTokenizer.generateToken).toHaveBeenNthCalledWith(
       2,
@@ -65,7 +65,7 @@ describe('Generate jwt token', () => {
     expect(mockTokenizer.generateToken).not.toHaveBeenNthCalledWith(
       1,
       JwtPayload,
-      '1h',
+      '15m',
     );
     expect(mockTokenizer.generateToken).not.toHaveBeenNthCalledWith(
       2,

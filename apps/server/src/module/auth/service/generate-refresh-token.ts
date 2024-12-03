@@ -17,7 +17,7 @@ export class GenerateRefreshToken
   async execute(data: Payload): Promise<{ access_token: string } | null> {
     if (!data) return null;
 
-    const access_token = await this.tokenizer.generateToken(data, '1h');
+    const access_token = await this.tokenizer.generateToken(data, '15m');
 
     return {
       access_token,

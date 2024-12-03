@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 
+import { JwtStrategy } from '@/common/startegies/jwt.startegy';
 import { BcryptService } from '@/shared/libs/bcrypt';
 import { ESUserRepository, PGUserRepository } from '@/shared/libs/constant';
 
@@ -30,6 +31,7 @@ const ES = {
     PG,
     ES,
     HandlerService,
+    JwtStrategy,
   ],
   controllers: [UserController],
 })

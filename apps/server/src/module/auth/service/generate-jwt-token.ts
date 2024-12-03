@@ -21,7 +21,7 @@ export class GenerateJwtToken
     };
 
     const [access_token, refresh_token] = await Promise.all([
-      this.tokenizer.generateToken(payload, '1h'),
+      this.tokenizer.generateToken(payload, '15m'),
       this.tokenizer.generateToken(payload, '7d'),
     ]);
 

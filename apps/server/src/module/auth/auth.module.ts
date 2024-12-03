@@ -13,6 +13,8 @@ import { GenerateJwtToken } from './service/generate-jwt-token';
 import { AuthController } from './auth.controller';
 import { PGUserRepositoryImpl } from '../users/infrastructure/repositories/pg.user.repository.impl';
 import { ESUserRepositoryImpl } from '../users/infrastructure/repositories/es.user.repository.impl';
+import { GenerateRefreshToken } from './service/generate-refresh-token';
+import { RefreshTokenStrategy } from '@/common/startegies/refresh-token.strategy';
 
 const PG = {
   provide: PGUserRepository,
@@ -31,6 +33,8 @@ const ES = {
     BcryptService,
     ValidateUserCredentials,
     GenerateJwtToken,
+    GenerateRefreshToken,
+    RefreshTokenStrategy,
     LocalStrategy,
     GoogleOauthStrategy,
     GithubOAuthStrategy,

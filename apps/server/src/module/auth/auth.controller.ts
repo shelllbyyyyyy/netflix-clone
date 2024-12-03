@@ -36,6 +36,9 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
+import { GenerateRefreshToken } from './service/generate-refresh-token';
+import { RefreshAuthGuard } from '@/common/guards/refresh-token-auth.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -44,6 +47,7 @@ export class AuthController {
     private readonly eventEmitter: EventEmitter2,
     private readonly validateUserCredentials: ValidateUserCredentials,
     private readonly generateJwtToken: GenerateJwtToken,
+    private readonly generateRefreshToken: GenerateRefreshToken,
     private readonly queryBus: QueryBus,
     private readonly commandBus: CommandBus,
   ) {}
@@ -106,6 +110,7 @@ export class AuthController {
   })
   async login(@Body() data: LoginDTO, @Res() res: Response) {
     const { email, password } = data;
+
     try {
       const query = new FindUserByEmailQuery(email);
 
@@ -124,39 +129,33 @@ export class AuthController {
       const { access_token, refresh_token } =
         await this.generateJwtToken.execute(user);
 
-      res.cookie('access_token', access_token, {
-        httpOnly: process.env.NODE_ENV === 'production',
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 60,
-        path: '/',
-        sameSite: 'lax',
-      });
-
       res.cookie('refresh_token', refresh_token, {
         httpOnly: process.env.NODE_ENV === 'production',
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 7 * 24,
+        maxAge: 60 * 60 * 7 * 24 * 1000,
+        sameSite: true,
         path: '/',
-        sameSite: 'lax',
       });
 
-      return res
-        .status(HttpStatus.OK)
-        .json(new ApiResponse(HttpStatus.OK, 'Login successfully', null));
+      return res.status(HttpStatus.OK).json(
+        new ApiResponse(HttpStatus.OK, 'Login successfully', {
+          access_token,
+        }),
+      );
     } catch (error) {
       throw error;
     }
   }
 
   @UseGuards(DynamicOAuthGuard)
-  @Get(':provider')
+  @Get('login/:provider')
   async handleOAuth(
     @Param('provider') _provider: string,
     @Req() _req: Request,
   ) {}
 
   @UseGuards(DynamicOAuthGuard)
-  @Get(':provider/callback')
+  @Get('login/:provider/callback')
   async handleOAuthCallback(
     @Req() req: Request,
     @Res() res: Response,
@@ -204,7 +203,7 @@ export class AuthController {
       res.cookie('access_token', access_token, {
         httpOnly: process.env.NODE_ENV === 'production',
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 60,
+        maxAge: 15 * 60 * 1000,
         path: '/',
         sameSite: 'lax',
       });
@@ -212,7 +211,7 @@ export class AuthController {
       res.cookie('refresh_token', refresh_token, {
         httpOnly: process.env.NODE_ENV === 'production',
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 7 * 24,
+        maxAge: 60 * 60 * 7 * 24 * 1000,
         path: '/',
         sameSite: 'lax',
       });
@@ -220,6 +219,39 @@ export class AuthController {
       return res
         .status(HttpStatus.OK)
         .json(new ApiResponse(HttpStatus.OK, 'OAuth success', null));
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @UseGuards(RefreshAuthGuard)
+  @Get('refresh')
+  @ApiOkResponse({
+    description: 'Refresh token granted',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Credentials expired',
+  })
+  public async getMe(@Req() req: Request, @Res() res: Response) {
+    try {
+      const { access_token } = await this.generateRefreshToken.execute({
+        sub: (req as any).user.sub,
+        email: (req as any).user.email,
+      });
+      if (!access_token) throw new UnauthorizedException('Credentials expired');
+
+      res.cookie('access_token', access_token, {
+        httpOnly: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 15 * 60 * 1000,
+        sameSite: true,
+      });
+
+      return res.status(HttpStatus.OK).json(
+        new ApiResponse(HttpStatus.OK, 'Refresh token granted', {
+          access_token,
+        }),
+      );
     } catch (error) {
       throw error;
     }

@@ -38,7 +38,7 @@ const Register = () => {
   return (
     <Card className="w-full lg:w-[500px] h-full lg:h-[800px] bg-black/70 rounded-none lg:py-4 lg:px-14">
       <CardHeader>
-        <a href="/" className="cursor-pointer static lg:hidden">
+        <Link href="/" className="cursor-pointer static lg:hidden">
           <Image
             src={"/assets/logo-text.png"}
             alt="logo"
@@ -47,7 +47,7 @@ const Register = () => {
             priority
             className="mr-5"
           />
-        </a>
+        </Link>
         <CardTitle className="text-title">Masuk</CardTitle>
       </CardHeader>
       <RegisterFormInner

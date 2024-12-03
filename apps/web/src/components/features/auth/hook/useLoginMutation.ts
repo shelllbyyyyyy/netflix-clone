@@ -4,12 +4,12 @@ import { useMutation } from "@tanstack/react-query";
 import { ApiFn, MutationConfig } from "@/lib/react-query";
 import { useApiClient } from "@/components/provider/api-client-provider";
 import { ApiResponse } from "@/lib/api-response";
-import { LoginFormSchema } from "../types";
+import { LoginFormSchema, TokenPayload } from "../types";
 
-const login: ApiFn<LoginFormSchema, AxiosPromise<ApiResponse<null>>> = async (
-  loginFormSchema,
-  { axios = defaultAxios }
-) => {
+const login: ApiFn<
+  LoginFormSchema,
+  AxiosPromise<ApiResponse<TokenPayload>>
+> = async (loginFormSchema, { axios = defaultAxios }) => {
   const result = await axios.post("/api/auth/login", loginFormSchema);
 
   return result;

@@ -3,29 +3,33 @@
 import { AxiosError } from "axios";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { queryClient } from "@/lib/react-query";
 
 import LoginFormInner from "../form/login-form-inner";
 import { useLoginMutation } from "../hook/useLoginMutation";
 import { LoginFormSchema } from "../types";
+import { useUserStore } from "../../user/hook/useUserStore";
 
 const Login = () => {
-  const { mutateAsync: loginMutate, isPending } = useLoginMutation({
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["login"],
-      });
+  const router = useRouter();
+  const { setCredentials } = useUserStore();
+
+  const { mutateAsync: LoginMutate, isPending } = useLoginMutation({
+    onSuccess: async (data) => {
+      setCredentials({ access_token: data.data.data.access_token });
     },
   });
 
   const handleLoginSubmit = async (values: LoginFormSchema) => {
     try {
-      await loginMutate(values);
+      await LoginMutate(values);
+
+      router.push("/home");
     } catch (error) {
       if (error instanceof AxiosError) {
         const err = error as AxiosError<{ errors: string[] }>;
@@ -38,7 +42,7 @@ const Login = () => {
   return (
     <Card className="w-full lg:w-[450px] h-[700px] bg-black/70 rounded-none lg:py-4 lg:px-14">
       <CardHeader>
-        <a href="/" className="cursor-pointer static lg:hidden">
+        <Link href="/" className="cursor-pointer static lg:hidden">
           <Image
             src={"/assets/logo-text.png"}
             alt="logo"
@@ -47,7 +51,7 @@ const Login = () => {
             priority
             className="mr-5"
           />
-        </a>
+        </Link>
         <CardTitle className="text-title">Masuk</CardTitle>
       </CardHeader>
       <LoginFormInner isLoading={isPending} onSubmit={handleLoginSubmit} />

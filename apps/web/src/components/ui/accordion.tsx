@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
-import { ChevronDown, Minus, Plus } from "lucide-react";
+import { Minus, Plus } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -24,7 +24,7 @@ const AccordionTrigger = React.forwardRef<
     <AccordionPrimitive.Trigger
       ref={ref}
       className={cn(
-        "relative flex p-8 items-center justify-between mt-2 bg-card hover:bg-neutral-700 transition-all duration-300 border rounded-lg w-full [&[data-state=open]>svg]:rotate-180 [&[data-state=open]>#plus]:opacity-0 [&[data-state=closed]>#plus]:opacity-100 [&[data-state=closed]>#minus]:opacity-0 [&[data-state=open]>#minus]:opacity-100",
+        "relative flex p-8 items-center text-xl font-bold justify-between mt-2 bg-card hover:bg-neutral-700 transition-all duration-300 border rounded-lg w-full [&[data-state=open]>svg]:rotate-180 [&[data-state=open]>#plus]:opacity-0 [&[data-state=closed]>#plus]:opacity-100 [&[data-state=closed]>#minus]:opacity-0 [&[data-state=open]>#minus]:opacity-100",
         className
       )}
       {...props}
@@ -50,7 +50,7 @@ const AccordionContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Content
     ref={ref}
-    className="flex bg-card rounded-md mt-2 w-full transition-[max-height] duration-300 ease-in  overflow-hidden text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down data-[state=open]:p-8  data-[state=open]:-max-h-20  data-[state=closed]:max-h-0"
+    className="flex bg-card rounded-md mt-2 w-full text-xl font-bold transition-[max-height] duration-300 ease-in  overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down data-[state=open]:p-8  data-[state=open]:-max-h-20  data-[state=closed]:max-h-0"
     {...props}
   >
     <div className={cn("pb-4 pt-0", className)}>{children}</div>

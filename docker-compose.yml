@@ -1,0 +1,98 @@
+services:
+  postgres-primary:
+    image: postgres:13
+    container_name: postgres-primary
+    ports:
+      - "8888:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: netflix
+    volumes:
+      - data_postgresql:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+    networks:
+      - netflix-networks
+
+  redis-primary:
+    image: "redis:alpine"
+    container_name: redis-primary
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 5s
+    restart: always
+    networks:
+      - netflix-networks
+
+  elastic-primary:
+    image: "elasticsearch:8.15.4"
+    container_name: elastic-primary
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    restart: always
+    networks:
+      - netflix-networks
+
+  nest-app:
+    build:
+      context: ./apps/server
+      dockerfile: Dockerfile
+      target: production
+    env_file:
+      - ./apps/server/.env
+    ports:
+      - "4003:4003"
+    depends_on:
+      elastic-primary:
+        condition: service_started
+      redis-primary:
+        condition: service_healthy
+      postgres-primary:
+        condition: service_healthy
+    networks:
+      - netflix-networks
+
+  nextjs:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+      target: production
+    env_file:
+      - ./apps/web/.env
+    depends_on:
+      nest-app:
+        condition: service_started
+      elastic-primary:
+        condition: service_started
+      redis-primary:
+        condition: service_healthy
+      postgres-primary:
+        condition: service_healthy
+    ports:
+      - "8003:8003"
+    networks:
+      - netflix-networks
+
+volumes:
+  data_postgresql:
+  elasticsearch_data:
+networks:
+  netflix-networks:
+    driver: bridge

@@ -141,7 +141,19 @@ a {
     @apply w-full;
   }
 
+  .text-title {
+    @apply text-3xl font-bold;
+  }
+
   .bg-card {
-    @apply bg-neutral-800;
+    @apply bg-neutral-800 border-white/20;
+  }
+
+  .input-primary {
+    @apply bg-neutral-800/50 border-white/30 h-12 pb-2 pt-6;
+  }
+
+  .form-error {
+    @apply text-destructive text-sm;
   }
 }

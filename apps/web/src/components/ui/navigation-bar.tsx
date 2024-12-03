@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "next-themes";
-import { LanguagesIcon, Moon, Sun } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -69,9 +70,9 @@ const Navigationbar = () => {
             <Image
               src={"/assets/logo-text.png"}
               alt="logo"
-              width={120}
-              height={40}
-              className="h-auto w-auto scale-150"
+              width={1000}
+              height={1000}
+              className="h-[80px] w-[200px]"
             />
           </a>
         </aside>
@@ -79,7 +80,7 @@ const Navigationbar = () => {
         <aside className="flex gap-3 items-center">
           <Language />
           <Button variant={"outline"} rounded={"full"}>
-            Masuk
+            <Link href={"/auth/login"}>Masuk</Link>
           </Button>
         </aside>
       </div>

@@ -19,11 +19,11 @@ jobs:
           node-version: "18"
 
       - name: Install dependencies
-        run: pnpm install
+        run: npm install
 
       - name: Install dependencies server
-        run: pnpm install
+        run: npm install
         working-directory: ./apps/server
 
       - name: Run tests
-        run: pnpm test:server
+        run: npm run test:server

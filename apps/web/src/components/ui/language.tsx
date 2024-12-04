@@ -17,10 +17,12 @@ export const Language = () => {
 
   return (
     <Select onValueChange={setLanguage} defaultValue={language}>
-      <SelectTrigger className="w-[180px] rounded-full">
+      <SelectTrigger className="lg:w-[180px] rounded-full w-auto">
         <div className="flex gap-2">
           <LanguagesIcon size={18} />
-          <SelectValue />
+          <div className="hidden lg:block">
+            <SelectValue />
+          </div>
         </div>
       </SelectTrigger>
 

@@ -110,31 +110,31 @@ a {
 
 @layer utilities {
   header {
-    @apply fixed top-0 z-50 w-full transition duration-300 h-auto;
-  }
-
-  header.default {
-    @apply bg-transparent;
-  }
-
-  header.scrolled {
-    @apply shadow-sm;
+    @apply fixed top-0 z-50 w-full transition duration-300 h-32 lg:bg-transparent bg-black/50 max-lg:backdrop-blur-md max-lg:backdrop-brightness-50;
   }
 
   nav {
-    @apply flex justify-center items-center w-full;
+    @apply min-w-[590px];
   }
 
   nav ul {
-    @apply flex text-center px-2;
+    @apply flex text-center px-5;
   }
 
   nav ul li {
-    @apply p-5 cursor-pointer;
+    @apply p-5;
   }
 
   nav ul li a {
-    @apply font-semibold text-md text-white/70 hover:text-white transition duration-300;
+    @apply font-semibold text-md text-white/70 hover:text-white transition duration-300 cursor-pointer w-full;
+  }
+
+  .nav-card {
+    @apply absolute top-20 left-[50%] lg:flex hidden translate-x-[-50%] justify-center items-center backdrop-blur-md backdrop-brightness-50 h-12 rounded-full bg-black/10;
+  }
+
+  .nav-card-mb {
+    @apply absolute top-20 left-[50%] flex lg:hidden translate-x-[-50%] justify-center items-center h-12 bg-transparent;
   }
 
   footer {
@@ -155,5 +155,22 @@ a {
 
   .form-error {
     @apply text-destructive text-sm;
+  }
+
+  .mask-fade {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 1) 15%,
+      rgba(0, 0, 0, 1) 85%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 1) 15%,
+      rgba(0, 0, 0, 1) 85%,
+      rgba(0, 0, 0, 0) 100%
+    );
   }
 }

@@ -13,8 +13,7 @@ const Navigationbar = () => {
               alt="logo"
               width={1000}
               height={1000}
-              className="h-[80px] w-[200px]"
-              style={{ width: "auto", height: "auto" }}
+              style={{ width: "200px", height: "80px" }}
               priority
             />
           </Link>

@@ -14,10 +14,11 @@ export default async function HomeLayout({
   if (refresh_token) redirect("/home");
 
   return (
-    <>
+    <div className="bg-gradient-to-b from-hero via-[#1F1C18] to-[#1F1C18]">
+      <div className="absolute inset-0 bg-black/50" />
       <Navigationbar />
       {children}
       <Footer />
-    </>
+    </div>
   );
 }

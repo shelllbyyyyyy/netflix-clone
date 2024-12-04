@@ -15,6 +15,13 @@ import {
 import { Card } from "./card";
 import { Button } from "./button";
 import { Language } from "./language";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "./carousel";
 
 type NavItemProps = {
   path: string;
@@ -41,42 +48,31 @@ const navItems: NavItemProps[] = [
 ];
 
 const Navigationbar = () => {
-  useEffect(() => {
-    const handleScroll = () => {
-      const header = document.querySelector("header");
-      const scroll = window.scrollY;
-
-      if (scroll > 50) {
-        header?.classList.add("scrolled");
-        header?.classList.remove("default");
-      } else {
-        header?.classList.add("default");
-        header?.classList.remove("scrolled");
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
   return (
     <header>
-      <div className="relative max-w-[1800px] flex justify-between h-16 mx-auto items-center py-12">
+      <div className="relative max-w-[1800px] flex justify-between h-16 mx-auto items-center py-12 px-6 lg:px-0">
         <aside>
-          <a href="#">
+          <Link href="#" className="lg:block hidden">
             <Image
               src={"/assets/logo-text.png"}
               alt="logo"
               width={1000}
               height={1000}
-              className="h-[80px] w-[200px]"
+              style={{ width: "200px", height: "80px" }}
             />
-          </a>
+          </Link>
+          <Link href="#" className="lg:hidden block">
+            <Image
+              src={"/assets/logo-icon.png"}
+              alt="logo"
+              width={40}
+              height={40}
+              style={{ width: "auto", height: "auto" }}
+            />
+          </Link>
         </aside>
         <NavCard />
+        <NavCardCarousel />
         <aside className="flex gap-3 items-center">
           <Language />
           <Button variant={"outline"} rounded={"full"}>
@@ -94,7 +90,7 @@ export default Navigationbar;
 
 const NavCard = () => {
   return (
-    <Card className="absolute top-20 left-[50%] translate-x-[-50%] flex justify-center items-center backdrop-blur-md backdrop-brightness-50 bg-backgorund h-11 rounded-full">
+    <div className="nav-card">
       <nav>
         <ul>
           {navItems.map(({ path, title }, i) => {
@@ -106,7 +102,34 @@ const NavCard = () => {
           })}
         </ul>
       </nav>
-    </Card>
+    </div>
+  );
+};
+
+const NavCardCarousel = () => {
+  return (
+    <Carousel
+      opts={{
+        align: "start",
+      }}
+      className="w-full nav-card-mb"
+    >
+      <CarouselContent className="py-5 px-3">
+        <nav className="w-full">
+          <ul>
+            {navItems.map(({ path, title }, i) => {
+              return (
+                <CarouselItem key={i}>
+                  <li>
+                    <a href={path}>{title}</a>
+                  </li>
+                </CarouselItem>
+              );
+            })}
+          </ul>
+        </nav>
+      </CarouselContent>
+    </Carousel>
   );
 };
 

@@ -7,17 +7,17 @@ const Footer = () => {
     <footer>
       <Wrapper
         section=""
-        className="flex flex-col justify-between gap-14 px-36 py-16"
+        className="flex flex-col justify-between gap-14 px-6 lg:px-36 py-16"
       >
         <div>
-          <p className="text-lg">
+          <p className="text-lg text-muted-foreground font-bold">
             Ada pertanyaan? Hubungi{" "}
             <a href="" className="underline">
               081380747343
             </a>
           </p>
         </div>
-        <div className="grid grid-cols-4">
+        <div className="grid grid-cols-1 lg:grid-cols-4">
           <div className="flex flex-col gap-3">
             {FooterLinks1.map(({ link, text }, i) => {
               return <FooterLink key={i} link={link} text={text} />;

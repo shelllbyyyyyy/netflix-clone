@@ -24,7 +24,7 @@ const PackageCard: React.FC<PackageCardProps> = ({
   title,
 }) => {
   return (
-    <BaseCard className="flex flex-col justify-between aspect-3/8 h-52 w-80 p-5">
+    <BaseCard className="flex flex-col justify-between h-52 w-[350px] lg:w-80 p-5 bg-gradient-to-r from-[#193257] to-[#120c1f]">
       <CardHeader className="p-0">
         <CardTitle className="text-xl">{title}</CardTitle>
         <CardDescription className="text-lg">{description}</CardDescription>

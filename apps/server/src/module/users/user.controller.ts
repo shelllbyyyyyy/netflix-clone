@@ -70,7 +70,7 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('/:phone_number')
+  @Get('phone-number/:phone_number')
   @ApiParam({ name: 'phone_number' })
   @ApiOkResponse({ description: 'User found' })
   @ApiNotFoundResponse({ description: 'User not found' })
@@ -92,7 +92,7 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('/:email')
+  @Get('email/:email')
   @ApiParam({ name: 'email' })
   @ApiOkResponse({ description: 'User found' })
   @ApiNotFoundResponse({ description: 'User not found' })
@@ -114,7 +114,7 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('/:id')
+  @Get('id/:id')
   @ApiParam({ name: 'id' })
   @ApiOkResponse({ description: 'User found' })
   @ApiNotFoundResponse({ description: 'User not found' })

@@ -2,13 +2,12 @@ import React from "react";
 
 import Container from "@/components/layout/container";
 import Wrapper from "@/components/layout/wrapper";
-import FetchUser from "@/components/features/user/component/fetch-user";
 
 const Home = async () => {
   return (
     <Container>
       <Wrapper section="home">
-        <FetchUser />
+        <h1>Halo</h1>
       </Wrapper>
     </Container>
   );

@@ -8,6 +8,7 @@ import { ConfigModule, JwtModule, ThrottleModule } from './shared/modules';
 import { RedisModule } from './shared/libs/redis/redis.module';
 import { SearchModule } from './shared/libs/elastic/search.module';
 import { DatabaseModule } from './shared/libs/pg/database.module';
+import { CLoudinaryModules } from './shared/libs/cloudinary/cloudinary.module';
 import { UserModule } from './module/users/user.module';
 import { AuthModule } from './module/auth/auth.module';
 
@@ -19,6 +20,7 @@ import { AuthModule } from './module/auth/auth.module';
     ConfigModule,
     RedisModule,
     DatabaseModule,
+    CLoudinaryModules,
     SearchModule,
     UserModule,
     AuthModule,

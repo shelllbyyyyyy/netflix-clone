@@ -150,7 +150,7 @@ a {
   }
 
   .input-primary {
-    @apply bg-neutral-800/50 border-white/30 h-12 pb-2 pt-6;
+    @apply bg-neutral-800/50 border-white/30;
   }
 
   .form-error {

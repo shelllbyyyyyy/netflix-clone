@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { RedisService } from '@/shared/libs/redis/redis.service';
-import { PGUserRepository } from '@/shared/libs/constant';
+import { ESUserRepository, PGUserRepository } from '@/shared/libs/constant';
 import { BcryptService } from '@/shared/libs/bcrypt';
 
 import { UserRepository } from '../domain/repositories/user.repository';
@@ -18,6 +18,8 @@ import {
   user,
   userResponse,
   email,
+  created_at,
+  updated_at,
 } from './mock';
 import { ChangePasswordCommand } from '../application/commands';
 
@@ -34,6 +36,7 @@ describe('Change Password Handler', () => {
         { provide: BcryptService, useValue: mockBcryptService },
         { provide: RedisService, useValue: mockRedisService },
         { provide: PGUserRepository, useValue: mockUserRepository },
+        { provide: ESUserRepository, useValue: mockUserRepository },
       ],
     }).compile();
 
@@ -59,6 +62,8 @@ describe('Change Password Handler', () => {
 
     const newUserResponse = deepCopy(userResponse);
     newUserResponse['password'] = hashed_password;
+    newUserResponse['created_at'] = created_at;
+    newUserResponse['updated_at'] = updated_at;
 
     const newUser = user.clone();
     newUser.setPassword(hashed_password);

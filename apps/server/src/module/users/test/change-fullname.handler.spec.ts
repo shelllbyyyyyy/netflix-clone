@@ -1,11 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { RedisService } from '@/shared/libs/redis/redis.service';
-import { PGUserRepository } from '@/shared/libs/constant';
+import { ESUserRepository, PGUserRepository } from '@/shared/libs/constant';
 
 import { UserRepository } from '../domain/repositories/user.repository';
 import { ChangeFullnameHandler } from '../application/commands/change-fullname.handler';
 import {
+  created_at,
   deepCopy,
   email,
   fullname,
@@ -13,6 +14,7 @@ import {
   mockRedisService,
   mockUserRepository,
   phone_number,
+  updated_at,
   user,
   userResponse,
 } from './mock';
@@ -29,6 +31,7 @@ describe('Change Fullname Handler', () => {
         ChangeFullnameHandler,
         { provide: RedisService, useValue: mockRedisService },
         { provide: PGUserRepository, useValue: mockUserRepository },
+        { provide: ESUserRepository, useValue: mockUserRepository },
       ],
     }).compile();
 
@@ -52,6 +55,8 @@ describe('Change Fullname Handler', () => {
 
     const newUserResponse = deepCopy(userResponse);
     newUserResponse['fullname'] = newFullname;
+    newUserResponse['created_at'] = created_at;
+    newUserResponse['updated_at'] = updated_at;
 
     const newUser = user.clone();
     newUser.setFullname(newFullname);

@@ -1,12 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { RedisService } from '@/shared/libs/redis/redis.service';
-import { PGUserRepository } from '@/shared/libs/constant';
+import { ESUserRepository, PGUserRepository } from '@/shared/libs/constant';
 import { BcryptService } from '@/shared/libs/bcrypt';
 
 import { UserRepository } from '../domain/repositories/user.repository';
 import { ChangeEmailHandler } from '../application/commands/change-email.handler';
 import {
+  created_at,
   deepCopy,
   email,
   hashed_password,
@@ -16,6 +17,7 @@ import {
   mockUserRepository,
   password,
   phone_number,
+  updated_at,
   user,
   userResponse,
 } from './mock';
@@ -32,18 +34,10 @@ describe('Change email Handler', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ChangeEmailHandler,
-        {
-          provide: BcryptService,
-          useValue: mockBcryptService,
-        },
-        {
-          provide: RedisService,
-          useValue: mockRedisService,
-        },
-        {
-          provide: PGUserRepository,
-          useValue: mockUserRepository,
-        },
+        { provide: BcryptService, useValue: mockBcryptService },
+        { provide: RedisService, useValue: mockRedisService },
+        { provide: PGUserRepository, useValue: mockUserRepository },
+        { provide: ESUserRepository, useValue: mockUserRepository },
       ],
     }).compile();
 
@@ -67,6 +61,8 @@ describe('Change email Handler', () => {
 
     const newUserResponse = deepCopy(userResponse);
     newUserResponse['email'] = emails;
+    newUserResponse['created_at'] = created_at;
+    newUserResponse['updated_at'] = updated_at;
 
     const newUser = user.clone();
     newUser.setEmail(new Email(emails));

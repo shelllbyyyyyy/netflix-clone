@@ -1,17 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { RedisService } from '@/shared/libs/redis/redis.service';
-import { PGUserRepository } from '@/shared/libs/constant';
+import { ESUserRepository, PGUserRepository } from '@/shared/libs/constant';
 
 import { UserRepository } from '../domain/repositories/user.repository';
 import { LockAccountHandler } from '../application/commands/lock-account.handler';
 import {
+  created_at,
   deepCopy,
   email,
   id,
   mockRedisService,
   mockUserRepository,
   phone_number,
+  updated_at,
   user,
   userResponse,
 } from './mock';
@@ -28,6 +30,7 @@ describe('Lock Account Handler', () => {
         LockAccountHandler,
         { provide: RedisService, useValue: mockRedisService },
         { provide: PGUserRepository, useValue: mockUserRepository },
+        { provide: ESUserRepository, useValue: mockUserRepository },
       ],
     }).compile();
 
@@ -48,6 +51,8 @@ describe('Lock Account Handler', () => {
     const newUserResponse = deepCopy(userResponse);
     newUserResponse['is_account_non_expired'] = false;
     newUserResponse['is_account_non_locked'] = false;
+    newUserResponse['created_at'] = created_at;
+    newUserResponse['updated_at'] = updated_at;
 
     const newUser = user.clone();
     newUser.setIsAccountExpired(false);

@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -64,15 +65,27 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
               placeholder={""}
               {...field}
               type={props.type}
-              className="input-primary peer"
+              onKeyDown={(e) => {
+                if (e.key === " ") {
+                  e.stopPropagation();
+                }
+              }}
+              className={cn(
+                "input-primary peer",
+                props.placeholder
+                  ? "pb-2 pt-6 h-12"
+                  : "h-12 file:pt-2 file:text-muted-foreground"
+              )}
             />
           </FormControl>
-          <FormLabel
-            htmlFor={props.name}
-            className="text-muted-foreground absolute duration-150 transform -translate-y-3 scale-75 top-5 origin-[0] left-3.5 z-10 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3"
-          >
-            {props.placeholder}
-          </FormLabel>
+          {props.placeholder && (
+            <FormLabel
+              htmlFor={props.name}
+              className="text-muted-foreground absolute duration-150 transform -translate-y-3 scale-75 top-5 origin-[0] left-3.5 z-10 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3"
+            >
+              {props.placeholder}
+            </FormLabel>
+          )}
         </div>
       );
     case FormFieldType.TEXTAREA:

@@ -11,6 +11,7 @@ export const createMockElasticResponse = <T>(
   hits: T[] = [],
   took: number = 10,
   total: number = hits.length,
+  result?: string,
   aggregations?: Record<string, unknown>,
 ) => {
   return {
@@ -22,6 +23,7 @@ export const createMockElasticResponse = <T>(
       skipped: 0,
       failed: 0,
     },
+    result: result,
     hits: {
       total: { value: total, relation: 'eq' },
       max_score: hits.length > 0 ? 1.0 : null,

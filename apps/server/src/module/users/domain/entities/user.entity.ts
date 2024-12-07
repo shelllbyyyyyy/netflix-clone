@@ -1,6 +1,7 @@
 import { Email } from '../value-object/email';
 import { Provider } from '../value-object/provider';
 import { UserId } from '../value-object/userId';
+import { ProfileEntity } from './profile.entity';
 
 export class UserEntity {
   private id: UserId;
@@ -12,6 +13,9 @@ export class UserEntity {
   private isVerified: boolean;
   private isAccountNonExpired: boolean;
   private isAccountNonLocked: boolean;
+  private profiles?: Set<ProfileEntity>;
+  private created_at: Date;
+  private updated_at: Date;
 
   constructor() {
     this.id = new UserId();
@@ -19,6 +23,7 @@ export class UserEntity {
     this.isVerified = false;
     this.isAccountNonExpired = true;
     this.isAccountNonLocked = true;
+    this.profiles = new Set<ProfileEntity>();
   }
 
   clone(): UserEntity {
@@ -95,5 +100,29 @@ export class UserEntity {
 
   public setIsAccountLocked(data: boolean) {
     this.isAccountNonLocked = data;
+  }
+
+  public get getProfiles(): ProfileEntity[] {
+    return Array.from(this.profiles);
+  }
+
+  public setProfiles(profiles: Set<ProfileEntity>) {
+    this.profiles = profiles;
+  }
+
+  public get getCreatedAt(): Date {
+    return this.created_at;
+  }
+
+  public setCreatedAt(created_at: Date) {
+    this.created_at = created_at;
+  }
+
+  public get getUpdatedAt(): Date {
+    return this.updated_at;
+  }
+
+  public setUpdatedAt(updated_at: Date) {
+    this.updated_at = updated_at;
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { estypes } from '@elastic/elasticsearch';
 
 import { Pagination } from '@/common/interface/pagination-search.result';
@@ -15,7 +15,8 @@ import { UserRepository } from '../../domain/repositories/user.repository';
 
 @Injectable()
 export class ESUserRepositoryImpl implements UserRepository {
-  index = 'users';
+  private readonly index = 'users';
+  private readonly logger = new Logger(ESUserRepositoryImpl.name);
   constructor(private readonly searchService: SearchService) {}
 
   async findAll(): Promise<UserEntity[]> {
@@ -25,15 +26,17 @@ export class ESUserRepositoryImpl implements UserRepository {
   async save(data: UserEntity): Promise<UserEntity> {
     const user = UserFactory.toResponse(data);
 
-    const { hits } = await this.searchService.index<UserResponse>(
+    const { result, _shards } = await this.searchService.index<UserResponse>(
       this.index,
       data.getId.getValue,
       user,
     );
 
-    if (hits.hits.length === 0) return null;
+    if (result != 'created') return null;
 
-    return UserFactory.toDomain(hits.hits[0]._source);
+    this.logger.log(`${_shards.successful} document created`);
+
+    return data;
   }
 
   async findByEmail(email: Email): Promise<UserEntity | null> {
@@ -82,11 +85,13 @@ export class ESUserRepositoryImpl implements UserRepository {
   }
 
   async delete(data: UserEntity): Promise<boolean> {
-    const { result } = await this.searchService.delete(
+    const { result, _shards } = await this.searchService.delete(
       this.index,
       data.getId.getValue,
     );
     if (result == 'not_found') return false;
+
+    this.logger.log(`${_shards.successful} document deleted`);
 
     return true;
   }
@@ -101,6 +106,8 @@ export class ESUserRepositoryImpl implements UserRepository {
     );
     if (_shards.successful == 0) return false;
 
+    this.logger.log(`${_shards.successful} document updated`);
+
     return true;
   }
 
@@ -111,6 +118,8 @@ export class ESUserRepositoryImpl implements UserRepository {
       { email: data.getEmail.getValue },
     );
     if (_shards.successful == 0) return false;
+
+    this.logger.log(`${_shards.successful} document updated`);
 
     return true;
   }
@@ -123,6 +132,8 @@ export class ESUserRepositoryImpl implements UserRepository {
     );
     if (_shards.successful == 0) return false;
 
+    this.logger.log(`${_shards.successful} document updated`);
+
     return true;
   }
 
@@ -133,6 +144,8 @@ export class ESUserRepositoryImpl implements UserRepository {
       { provider: data.getProvider.getValue },
     );
     if (_shards.successful == 0) return false;
+
+    this.logger.log(`${_shards.successful} document updated`);
 
     return true;
   }
@@ -145,6 +158,8 @@ export class ESUserRepositoryImpl implements UserRepository {
     );
     if (_shards.successful == 0) return false;
 
+    this.logger.log(`${_shards.successful} document updated`);
+
     return true;
   }
 
@@ -156,6 +171,8 @@ export class ESUserRepositoryImpl implements UserRepository {
     );
     if (_shards.successful == 0) return false;
 
+    this.logger.log(`${_shards.successful} document updated`);
+
     return true;
   }
 
@@ -166,6 +183,8 @@ export class ESUserRepositoryImpl implements UserRepository {
       { phone_number: data.getPhoneNumber },
     );
     if (_shards.successful == 0) return false;
+
+    this.logger.log(`${_shards.successful} document updated`);
 
     return true;
   }
@@ -180,6 +199,8 @@ export class ESUserRepositoryImpl implements UserRepository {
       },
     );
     if (_shards.successful == 0) return false;
+
+    this.logger.log(`${_shards.successful} document updated`);
 
     return true;
   }

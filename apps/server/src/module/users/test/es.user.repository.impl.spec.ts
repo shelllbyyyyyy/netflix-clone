@@ -52,6 +52,7 @@ describe('ES User Repository', () => {
         [userResponse],
         1,
         1,
+        'created',
       );
 
       mockElasticService.index.mockResolvedValue(mockElasticResult);
@@ -71,13 +72,14 @@ describe('ES User Repository', () => {
         [],
         0,
         0,
+        'failure',
       );
 
       mockElasticService.index.mockResolvedValue(mockElasticResult);
 
       const result = await esUserRepository.save(user);
 
-      expect(result).toEqual(null);
+      expect(result).toBeNull();
       expect(mockElasticService.index).toHaveBeenCalledWith(
         'users',
         id,

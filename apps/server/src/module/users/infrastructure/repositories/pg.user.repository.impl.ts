@@ -23,7 +23,7 @@ export class PGUserRepositoryImpl implements UserRepository {
 
     const result = await this.db.query(query);
 
-    this.logger.log(`${result.rowCount} Rows affected`);
+    this.logger.log(`${result.rowCount} rows affected`);
 
     if (result.rows.length == 0) return [];
 
@@ -52,7 +52,7 @@ export class PGUserRepositoryImpl implements UserRepository {
       provider,
     ]);
 
-    this.logger.log(`${result.rowCount} Rows affected`);
+    this.logger.log(`${result.rowCount} rows affected`);
 
     if (result.rowCount == 0) return null;
 
@@ -66,7 +66,7 @@ export class PGUserRepositoryImpl implements UserRepository {
 
     const result = await this.db.query(query, [email.getValue]);
 
-    this.logger.log(`${result.rowCount} Rows affected`);
+    this.logger.log(`${result.rowCount} rows affected`);
 
     if (result.rows.length == 0) return null;
 
@@ -80,7 +80,7 @@ export class PGUserRepositoryImpl implements UserRepository {
 
     const result = await this.db.query(query, [id.getValue]);
 
-    this.logger.log(`${result.rowCount} Rows affected`);
+    this.logger.log(`${result.rowCount} rows affected`);
 
     if (result.rows.length == 0) return null;
 
@@ -94,7 +94,7 @@ export class PGUserRepositoryImpl implements UserRepository {
 
     const result = await this.db.query(query, [phone_number]);
 
-    this.logger.log(`${result.rowCount} Rows affected`);
+    this.logger.log(`${result.rowCount} rows affected`);
 
     if (result.rows.length == 0) return null;
 
@@ -108,7 +108,7 @@ export class PGUserRepositoryImpl implements UserRepository {
 
     const result = await this.db.query(query, [data.getEmail.getValue]);
 
-    this.logger.log(`${result.rowCount} Rows affected`);
+    this.logger.log(`${result.rowCount} rows affected`);
     if (result.rowCount == 0) return false;
 
     return true;
@@ -134,7 +134,7 @@ export class PGUserRepositoryImpl implements UserRepository {
       provider,
     ]);
 
-    this.logger.log(`${result.rowCount} Rows affected`);
+    this.logger.log(`${result.rowCount} rows affected`);
     if (result.rowCount == 0) return false;
 
     return true;
@@ -151,7 +151,7 @@ export class PGUserRepositoryImpl implements UserRepository {
 
     const result = await this.db.query(query, [id, email]);
 
-    this.logger.log(`${result.rowCount} Rows affected`);
+    this.logger.log(`${result.rowCount} rows affected`);
     if (result.rowCount == 0) return false;
 
     return true;
@@ -168,7 +168,7 @@ export class PGUserRepositoryImpl implements UserRepository {
 
     const result = await this.db.query(query, [id, password]);
 
-    this.logger.log(`${result.rowCount} Rows affected`);
+    this.logger.log(`${result.rowCount} rows affected`);
     if (result.rowCount == 0) return false;
 
     return true;
@@ -185,7 +185,7 @@ export class PGUserRepositoryImpl implements UserRepository {
 
     const result = await this.db.query(query, [id, provider]);
 
-    this.logger.log(`${result.rowCount} Rows affected`);
+    this.logger.log(`${result.rowCount} rows affected`);
     if (result.rowCount == 0) return false;
 
     return true;
@@ -202,7 +202,7 @@ export class PGUserRepositoryImpl implements UserRepository {
 
     const result = await this.db.query(query, [id, is_verified]);
 
-    this.logger.log(`${result.rowCount} Rows affected`);
+    this.logger.log(`${result.rowCount} rows affected`);
     if (result.rowCount == 0) return false;
 
     return true;
@@ -219,7 +219,7 @@ export class PGUserRepositoryImpl implements UserRepository {
 
     const result = await this.db.query(query, [id, fullname]);
 
-    this.logger.log(`${result.rowCount} Rows affected`);
+    this.logger.log(`${result.rowCount} rows affected`);
     if (result.rowCount == 0) return false;
 
     return true;
@@ -236,7 +236,7 @@ export class PGUserRepositoryImpl implements UserRepository {
 
     const result = await this.db.query(query, [id, phone_number]);
 
-    this.logger.log(`${result.rowCount} Rows affected`);
+    this.logger.log(`${result.rowCount} rows affected`);
     if (result.rowCount == 0) return false;
 
     return true;
@@ -252,7 +252,7 @@ export class PGUserRepositoryImpl implements UserRepository {
 
     const result = await this.db.query(query, [id, false]);
 
-    this.logger.log(`${result.rowCount} Rows affected`);
+    this.logger.log(`${result.rowCount} rows affected`);
     if (result.rowCount == 0) return false;
 
     return true;

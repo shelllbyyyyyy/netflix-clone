@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { RedisService } from '@/shared/libs/redis/redis.service';
-import { PGUserRepository } from '@/shared/libs/constant';
+import { ESUserRepository, PGUserRepository } from '@/shared/libs/constant';
 
 import { UserRepository } from '../domain/repositories/user.repository';
 import { UpdateProviderHandler } from '../application/commands/update-provider.handler';
@@ -15,6 +15,8 @@ import {
   phone_number,
   user,
   userResponse,
+  created_at,
+  updated_at,
 } from './mock';
 import { UpdateProviderCommand } from '../application/commands';
 import { Provider } from '../domain/value-object/provider';
@@ -30,6 +32,7 @@ describe('Update Provider Handler', () => {
         UpdateProviderHandler,
         { provide: RedisService, useValue: mockRedisService },
         { provide: PGUserRepository, useValue: mockUserRepository },
+        { provide: ESUserRepository, useValue: mockUserRepository },
       ],
     }).compile();
 
@@ -53,6 +56,8 @@ describe('Update Provider Handler', () => {
 
     const newUserResponse = deepCopy(userResponse);
     newUserResponse['provider'] = newProvider;
+    newUserResponse['created_at'] = created_at;
+    newUserResponse['updated_at'] = updated_at;
 
     const newUser = user.clone();
     newUser.setProvider(new Provider(newProvider));

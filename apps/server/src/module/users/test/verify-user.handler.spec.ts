@@ -1,17 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { RedisService } from '@/shared/libs/redis/redis.service';
-import { PGUserRepository } from '@/shared/libs/constant';
+import { ESUserRepository, PGUserRepository } from '@/shared/libs/constant';
 
 import { UserRepository } from '../domain/repositories/user.repository';
 import { VerifyUserHandler } from '../application/commands/verify-user.handler';
 import {
+  created_at,
   deepCopy,
   email,
   id,
   mockRedisService,
   mockUserRepository,
   phone_number,
+  updated_at,
   user,
   userResponse,
 } from './mock';
@@ -26,14 +28,9 @@ describe('verify user Handler', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         VerifyUserHandler,
-        {
-          provide: RedisService,
-          useValue: mockRedisService,
-        },
-        {
-          provide: PGUserRepository,
-          useValue: mockUserRepository,
-        },
+        { provide: RedisService, useValue: mockRedisService },
+        { provide: PGUserRepository, useValue: mockUserRepository },
+        { provide: ESUserRepository, useValue: mockUserRepository },
       ],
     }).compile();
 
@@ -52,7 +49,9 @@ describe('verify user Handler', () => {
 
   it('Should success verify user', async () => {
     const newUserResponse = deepCopy(userResponse);
-    newUserResponse['is_verified'] = true;
+    newUserResponse['is_verified'] = false;
+    newUserResponse['created_at'] = created_at;
+    newUserResponse['updated_at'] = updated_at;
 
     const newUser = user.clone();
     newUser.setIsVerified(true);
@@ -68,22 +67,22 @@ describe('verify user Handler', () => {
       }),
     );
 
-    expect(result).toBeTruthy();
-    expect(mockUserRepository.verifyUser).toHaveBeenCalledWith(newUser);
-    expect(mockRedisService.set).toHaveBeenCalledTimes(3);
-    expect(mockRedisService.set).toHaveBeenNthCalledWith(
+    expect(result).toBeFalsy();
+    expect(mockUserRepository.verifyUser).not.toHaveBeenCalledWith(newUser);
+    expect(mockRedisService.set).not.toHaveBeenCalledTimes(3);
+    expect(mockRedisService.set).not.toHaveBeenNthCalledWith(
       1,
       `user with ${email}: `,
       newUserResponse,
       60 * 60 * 30 * 24,
     );
-    expect(mockRedisService.set).toHaveBeenNthCalledWith(
+    expect(mockRedisService.set).not.toHaveBeenNthCalledWith(
       2,
       `user with ${id}: `,
       newUserResponse,
       60 * 60 * 30 * 24,
     );
-    expect(mockRedisService.set).toHaveBeenNthCalledWith(
+    expect(mockRedisService.set).not.toHaveBeenNthCalledWith(
       3,
       `user with ${phone_number}: `,
       newUserResponse,

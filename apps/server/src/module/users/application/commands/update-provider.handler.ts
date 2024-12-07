@@ -3,7 +3,7 @@ import { Inject } from '@nestjs/common';
 
 import { InvalidInputError } from '@/common/exceptions/invalid-input.error';
 import { RedisService } from '@/shared/libs/redis/redis.service';
-import { PGUserRepository } from '@/shared/libs/constant';
+import { ESUserRepository, PGUserRepository } from '@/shared/libs/constant';
 
 import { UpdateProviderCommand } from './update-provider.command';
 import { UserRepository } from '../../domain/repositories/user.repository';
@@ -17,6 +17,7 @@ export class UpdateProviderHandler
   constructor(
     private readonly redisService: RedisService,
     @Inject(PGUserRepository) private readonly userRepository: UserRepository,
+    @Inject(ESUserRepository) private readonly esUserRepository: UserRepository,
   ) {}
 
   async execute(command: UpdateProviderCommand): Promise<boolean> {
@@ -35,8 +36,12 @@ export class UpdateProviderHandler
     const user = UserFactory.toDomain(data);
     user.setProvider(new Provider(provider));
 
-    const result = await this.userRepository.updateProvider(user);
-    if (result) {
+    const [pg, es] = await Promise.all([
+      this.userRepository.updateProvider(user),
+      this.esUserRepository.updateProvider(user),
+    ]);
+
+    if (pg && es) {
       const response = UserFactory.toResponse(user);
 
       await Promise.all([
@@ -59,7 +64,7 @@ export class UpdateProviderHandler
         ),
       ]);
 
-      return result;
+      return true;
     }
 
     return false;

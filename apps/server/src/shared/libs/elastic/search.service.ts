@@ -2,17 +2,22 @@ import { Inject, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { Client, estypes } from '@elastic/elasticsearch';
 
 import { ELASTIC_CONNECTION } from '../constant';
-import { userSchema_v1 } from './schema';
+import { profileSchema_v1, userSchema_v1 } from './schema';
 
-export class SearchService implements OnModuleDestroy, OnModuleInit {
+export class SearchService implements OnModuleInit, OnModuleDestroy {
   private readonly usersIndex = 'users';
+  private readonly profilesIndex = 'profiles';
+
   constructor(@Inject(ELASTIC_CONNECTION) private readonly esService: Client) {}
 
   async onModuleInit() {
     try {
-      const [userIndexExists] = await Promise.all([
+      const [userIndexExists, profileIndexExists] = await Promise.all([
         this.esService.indices.exists({
           index: `${this.usersIndex}_v1`,
+        }),
+        this.esService.indices.exists({
+          index: `${this.profilesIndex}_v1`,
         }),
       ]);
 
@@ -31,8 +36,24 @@ export class SearchService implements OnModuleDestroy, OnModuleInit {
           ]);
         }
       }
+
+      if (!profileIndexExists) {
+        const { acknowledged } = await this.esService.indices.create({
+          index: `${this.profilesIndex}_v1`,
+        });
+
+        if (acknowledged) {
+          await Promise.all([
+            this.esService.indices.putMapping(profileSchema_v1),
+            this.esService.indices.putAlias({
+              index: `${this.profilesIndex}_v1`,
+              name: this.profilesIndex,
+            }),
+          ]);
+        }
+      }
     } catch (error) {
-      throw error;
+      throw 'error';
     }
   }
 
@@ -44,13 +65,15 @@ export class SearchService implements OnModuleDestroy, OnModuleInit {
     index: string,
     id: string,
     document: T,
-  ): Promise<estypes.SearchResponse<T>> {
+  ): Promise<estypes.IndexResponse> {
     try {
-      return (await this.esService.index({
+      const result = await this.esService.index({
         index,
         id,
-        body: document,
-      })) as unknown as estypes.SearchResponse<T>;
+        document,
+      });
+
+      return result;
     } catch (error) {
       throw error;
     }

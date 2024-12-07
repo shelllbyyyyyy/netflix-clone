@@ -3,7 +3,7 @@ import { Inject } from '@nestjs/common';
 
 import { InvalidInputError } from '@/common/exceptions/invalid-input.error';
 import { RedisService } from '@/shared/libs/redis/redis.service';
-import { PGUserRepository } from '@/shared/libs/constant';
+import { ESUserRepository, PGUserRepository } from '@/shared/libs/constant';
 
 import { UserRepository } from '../../domain/repositories/user.repository';
 import { LockAccountCommand } from './lock-account.command';
@@ -16,6 +16,7 @@ export class LockAccountHandler
   constructor(
     private readonly redisService: RedisService,
     @Inject(PGUserRepository) private readonly userRepository: UserRepository,
+    @Inject(ESUserRepository) private readonly esUserRepository: UserRepository,
   ) {}
 
   async execute(command: LockAccountCommand): Promise<boolean> {
@@ -39,16 +40,19 @@ export class LockAccountHandler
     user.setIsAccountLocked(is_account_non_locked);
     user.setIsAccountExpired(is_account_non_expired);
 
-    const result = await this.userRepository.lockAccount(user);
+    const [pg, es] = await Promise.all([
+      this.userRepository.lockAccount(user),
+      this.esUserRepository.lockAccount(user),
+    ]);
 
-    if (result) {
+    if (pg && es) {
       await Promise.all([
         this.redisService.del(`user with ${user.getEmail.getValue}: `),
         this.redisService.del(`user with ${user.getId.getValue}: `),
         this.redisService.del(`user with ${user.getPhoneNumber}: `),
       ]);
 
-      return result;
+      return true;
     }
 
     return false;

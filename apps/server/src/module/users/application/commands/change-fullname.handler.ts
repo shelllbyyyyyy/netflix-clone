@@ -3,7 +3,7 @@ import { Inject } from '@nestjs/common';
 
 import { InvalidInputError } from '@/common/exceptions/invalid-input.error';
 import { RedisService } from '@/shared/libs/redis/redis.service';
-import { PGUserRepository } from '@/shared/libs/constant';
+import { ESUserRepository, PGUserRepository } from '@/shared/libs/constant';
 
 import { UserRepository } from '../../domain/repositories/user.repository';
 import { ChangeFullnameCommand } from './change-fullname.command';
@@ -16,6 +16,7 @@ export class ChangeFullnameHandler
   constructor(
     private readonly redisService: RedisService,
     @Inject(PGUserRepository) private readonly userRepository: UserRepository,
+    @Inject(ESUserRepository) private readonly esUserRepository: UserRepository,
   ) {}
 
   async execute(command: ChangeFullnameCommand): Promise<boolean> {
@@ -34,8 +35,12 @@ export class ChangeFullnameHandler
     const user = UserFactory.toDomain(data);
     user.setFullname(fullname);
 
-    const result = await this.userRepository.changeFullname(user);
-    if (result) {
+    const [pg, es] = await Promise.all([
+      this.userRepository.changeFullname(user),
+      this.esUserRepository.changeFullname(user),
+    ]);
+
+    if (pg && es) {
       const response = UserFactory.toResponse(user);
 
       await Promise.all([
@@ -58,7 +63,7 @@ export class ChangeFullnameHandler
         ),
       ]);
 
-      return result;
+      return true;
     }
 
     return false;

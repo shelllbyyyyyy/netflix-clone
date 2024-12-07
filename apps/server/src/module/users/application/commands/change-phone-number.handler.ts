@@ -4,7 +4,7 @@ import { Inject } from '@nestjs/common';
 import { InvalidInputError } from '@/common/exceptions/invalid-input.error';
 import { BcryptService } from '@/shared/libs/bcrypt';
 import { RedisService } from '@/shared/libs/redis/redis.service';
-import { PGUserRepository } from '@/shared/libs/constant';
+import { ESUserRepository, PGUserRepository } from '@/shared/libs/constant';
 
 import { UserRepository } from '../../domain/repositories/user.repository';
 import { ChangePhoneNumberCommand } from './change-phone-number.command';
@@ -18,6 +18,7 @@ export class ChangePhoneNumberHandler
     private readonly bcryptService: BcryptService,
     private readonly redisService: RedisService,
     @Inject(PGUserRepository) private readonly userRepository: UserRepository,
+    @Inject(ESUserRepository) private readonly esUserRepository: UserRepository,
   ) {}
 
   async execute(command: ChangePhoneNumberCommand): Promise<boolean> {
@@ -44,9 +45,12 @@ export class ChangePhoneNumberHandler
     const user = UserFactory.toDomain(data);
     user.setPhoneNumber(phone_number);
 
-    const result = await this.userRepository.changePhoneNumber(user);
+    const [pg, es] = await Promise.all([
+      this.userRepository.changePhoneNumber(user),
+      this.esUserRepository.changePhoneNumber(user),
+    ]);
 
-    if (result) {
+    if (pg && es) {
       const response = UserFactory.toResponse(user);
 
       await Promise.all([
@@ -67,7 +71,7 @@ export class ChangePhoneNumberHandler
         ),
       ]);
 
-      return result;
+      return true;
     }
 
     return false;

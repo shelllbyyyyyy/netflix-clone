@@ -3,7 +3,7 @@ import { Inject } from '@nestjs/common';
 
 import { InvalidInputError } from '@/common/exceptions/invalid-input.error';
 import { RedisService } from '@/shared/libs/redis/redis.service';
-import { PGUserRepository } from '@/shared/libs/constant';
+import { ESUserRepository, PGUserRepository } from '@/shared/libs/constant';
 
 import { UserRepository } from '../../domain/repositories/user.repository';
 import { VerifyUserCommand } from './verify-user.command';
@@ -16,6 +16,7 @@ export class VerifyUserHandler
   constructor(
     private readonly redisService: RedisService,
     @Inject(PGUserRepository) private readonly userRepository: UserRepository,
+    @Inject(ESUserRepository) private readonly esUserRepository: UserRepository,
   ) {}
 
   async execute(command: VerifyUserCommand): Promise<boolean> {
@@ -32,8 +33,12 @@ export class VerifyUserHandler
     const user = UserFactory.toDomain(data);
     user.setIsVerified(is_verified);
 
-    const result = await this.userRepository.verifyUser(user);
-    if (result) {
+    const [pg, es] = await Promise.all([
+      this.userRepository.updateProvider(user),
+      this.esUserRepository.updateProvider(user),
+    ]);
+
+    if (pg && es) {
       const response = UserFactory.toResponse(user);
 
       await Promise.all([
@@ -56,7 +61,7 @@ export class VerifyUserHandler
         ),
       ]);
 
-      return result;
+      return true;
     }
 
     return false;

@@ -1,3 +1,5 @@
+import { ProfileResponse } from "./profile-response";
+
 export type UserResponse = {
   id: string;
   fullname: string;
@@ -8,5 +10,5 @@ export type UserResponse = {
   is_verified: boolean;
   is_account_non_locked: boolean;
   is_account_non_expired: boolean;
-  profiles?: any[];
+  profiles?: ProfileResponse[];
 };
